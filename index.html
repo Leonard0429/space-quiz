@@ -399,6 +399,19 @@
     .feedback.good { color: var(--green); }
     .feedback.bad { color: var(--red); }
 
+    .explanation {
+      margin: 8px 0 0;
+      padding: 11px 14px;
+      border: 1px solid rgba(69,230,224,.2);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: left;
+      background: rgba(69,230,224,.06);
+    }
+
+    .explanation[hidden] { display: none; }
+
     .next {
       display: block;
       width: 100%;
@@ -525,6 +538,7 @@
           <h2 id="question">Loading your mission...</h2>
           <div class="answers" id="answers"></div>
           <p class="feedback" id="feedback" aria-live="polite"></p>
+          <p class="explanation" id="explanation" aria-live="polite" hidden></p>
           <button class="next" id="nextButton" type="button" hidden>Next question →</button>
         </div>
       </div>
@@ -562,16 +576,16 @@
 
   <script>
     const questions = [
-      { category: "Stellar Origins", question: "What is the closest star to Earth?", answers: ["Sirius", "The Sun", "Proxima Centauri", "Polaris"], correct: 1 },
-      { category: "Planetary Science", question: "Which planet has the largest volcano in our solar system?", answers: ["Venus", "Earth", "Mars", "Jupiter"], correct: 2 },
-      { category: "Moon Missions", question: "What was the name of the first human-made object to reach the Moon?", answers: ["Luna 2", "Apollo 11", "Voyager 1", "Sputnik 1"], correct: 0 },
-      { category: "Deep Space", question: "What is a light-year a measurement of?", answers: ["Time", "Brightness", "Distance", "Temperature"], correct: 2 },
-      { category: "Cosmic Giants", question: "What type of galaxy is the Milky Way?", answers: ["Elliptical", "Spiral", "Irregular", "Ring"], correct: 1 },
-      { category: "Space Weather", question: "What creates the beautiful auroras near Earth's poles?", answers: ["Moon dust", "Ocean tides", "Solar particles", "Distant galaxies"], correct: 2 },
-      { category: "Gravity Wells", question: "What is the boundary around a black hole beyond which light cannot escape?", answers: ["Photon sphere", "Event horizon", "Singularity ring", "Dark edge"], correct: 1 },
-      { category: "Our Neighborhood", question: "Which planet is famous for its prominent ring system?", answers: ["Neptune", "Saturn", "Uranus", "Mercury"], correct: 1 },
-      { category: "Spaceflight", question: "What does NASA's acronym stand for?", answers: ["National Air and Space Alliance", "North American Space Agency", "National Aeronautics and Space Administration", "New Astronomy & Science Association"], correct: 2 },
-      { category: "Final Frontier", question: "What is the name of the galaxy closest to the Milky Way?", answers: ["Andromeda", "Triangulum", "Whirlpool", "Sombrero"], correct: 0 }
+      { category: "Stellar Origins", question: "What is the closest star to Earth?", answers: ["Sirius", "The Sun", "Proxima Centauri", "Polaris"], correct: 1, explanation: "The Sun is Earth's closest star, about 150 million kilometers away." },
+      { category: "Planetary Science", question: "Which planet has the largest volcano in our solar system?", answers: ["Venus", "Earth", "Mars", "Jupiter"], correct: 2, explanation: "Olympus Mons on Mars is the largest known volcano in the solar system." },
+      { category: "Moon Missions", question: "What was the name of the first human-made object to reach the Moon?", answers: ["Luna 2", "Apollo 11", "Voyager 1", "Sputnik 1"], correct: 0, explanation: "The Soviet probe Luna 2 became the first human-made object to reach the Moon in 1959." },
+      { category: "Deep Space", question: "What is a light-year a measurement of?", answers: ["Time", "Brightness", "Distance", "Temperature"], correct: 2, explanation: "A light-year is the distance light travels in one year: about 9.46 trillion kilometers." },
+      { category: "Cosmic Giants", question: "What type of galaxy is the Milky Way?", answers: ["Elliptical", "Spiral", "Irregular", "Ring"], correct: 1, explanation: "The Milky Way is a barred spiral galaxy with curved arms extending from its center." },
+      { category: "Space Weather", question: "What creates the beautiful auroras near Earth's poles?", answers: ["Moon dust", "Ocean tides", "Solar particles", "Distant galaxies"], correct: 2, explanation: "Auroras form when charged particles from the Sun interact with gases in Earth's atmosphere." },
+      { category: "Gravity Wells", question: "What is the boundary around a black hole beyond which light cannot escape?", answers: ["Photon sphere", "Event horizon", "Singularity ring", "Dark edge"], correct: 1, explanation: "The event horizon is the point around a black hole where escape would require faster-than-light speed." },
+      { category: "Our Neighborhood", question: "Which planet is famous for its prominent ring system?", answers: ["Neptune", "Saturn", "Uranus", "Mercury"], correct: 1, explanation: "Saturn's bright, extensive rings are made mostly of ice and rocky particles." },
+      { category: "Spaceflight", question: "What does NASA's acronym stand for?", answers: ["National Air and Space Alliance", "North American Space Agency", "National Aeronautics and Space Administration", "New Astronomy & Science Association"], correct: 2, explanation: "NASA stands for National Aeronautics and Space Administration, the US civil space agency." },
+      { category: "Final Frontier", question: "What is the name of the galaxy closest to the Milky Way?", answers: ["Andromeda", "Triangulum", "Whirlpool", "Sombrero"], correct: 0, explanation: "The Andromeda Galaxy is the nearest large galaxy to the Milky Way and is on a collision course with it." }
     ];
 
     let current = 0;
@@ -589,6 +603,7 @@
     const question = document.getElementById("question");
     const answers = document.getElementById("answers");
     const feedback = document.getElementById("feedback");
+    const explanation = document.getElementById("explanation");
     const nextButton = document.getElementById("nextButton");
     const finalScore = document.getElementById("finalScore");
     const resultCopy = document.getElementById("resultCopy");
@@ -610,6 +625,8 @@
       question.textContent = item.question;
       feedback.textContent = "";
       feedback.className = "feedback";
+      explanation.textContent = "";
+      explanation.hidden = true;
       nextButton.hidden = true;
       answers.innerHTML = "";
 
@@ -646,6 +663,8 @@
         feedback.className = "feedback bad";
       }
 
+      explanation.textContent = item.explanation;
+      explanation.hidden = false;
       scoreEl.textContent = score;
       nextButton.textContent = current === questions.length - 1 ? "View mission results →" : "Next question →";
       nextButton.hidden = false;
