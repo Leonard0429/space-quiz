@@ -227,6 +227,66 @@
       color: var(--yellow);
     }
 
+    .start-screen {
+      display: grid;
+      place-items: center;
+      min-height: 420px;
+      text-align: center;
+    }
+
+    .start-screen h2 {
+      margin: 18px auto 10px;
+    }
+
+    .briefing-copy {
+      max-width: 380px;
+      margin: 0 auto 24px;
+      color: var(--muted);
+    }
+
+    .mission-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 11px;
+      margin: 0 auto 24px;
+      max-width: 360px;
+    }
+
+    .mission-detail {
+      padding: 12px;
+      border: 1px solid rgba(69,230,224,.18);
+      border-radius: 14px;
+      background: rgba(69,230,224,.06);
+    }
+
+    .mission-detail strong {
+      display: block;
+      color: var(--cyan);
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .mission-detail span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .start {
+      width: 100%;
+      max-width: 360px;
+      padding: 14px 18px;
+      border: 0;
+      border-radius: 15px;
+      color: #171229;
+      font-weight: 850;
+      background: linear-gradient(100deg, var(--yellow), #ff9a76);
+      box-shadow: 0 10px 24px rgba(255, 159, 99, .2);
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    .start:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
     .progress-track {
       height: 8px;
       overflow: hidden;
@@ -363,7 +423,7 @@
       text-align: center;
     }
 
-    .results[hidden], .quiz[hidden] { display: none; }
+    .results[hidden], .quiz[hidden], .start-screen[hidden] { display: none; }
 
     .reaction {
       font-size: 70px;
@@ -469,6 +529,25 @@
         </div>
       </div>
 
+      <div class="start-screen" id="startScreen">
+        <div>
+          <p class="eyebrow">Mission briefing</p>
+          <h2>Ready to explore the cosmos?</h2>
+          <p class="briefing-copy">Answer 10 space questions and track your score as you travel from stellar origins to the final frontier.</p>
+          <div class="mission-details" aria-label="Mission details">
+            <div class="mission-detail">
+              <strong>10</strong>
+              <span>Questions</span>
+            </div>
+            <div class="mission-detail">
+              <strong>1</strong>
+              <span>Point per correct answer</span>
+            </div>
+          </div>
+          <button class="start" id="startButton" type="button">Start mission →</button>
+        </div>
+      </div>
+
       <div class="results" id="results" hidden>
         <div>
           <div class="reaction" id="reaction">🚀</div>
@@ -500,6 +579,8 @@
     let answered = false;
 
     const quiz = document.getElementById("quiz");
+    const startScreen = document.getElementById("startScreen");
+    const startButton = document.getElementById("startButton");
     const results = document.getElementById("results");
     const questionCount = document.getElementById("questionCount");
     const scoreEl = document.getElementById("score");
@@ -512,6 +593,12 @@
     const finalScore = document.getElementById("finalScore");
     const resultCopy = document.getElementById("resultCopy");
     const reaction = document.getElementById("reaction");
+
+    function startMission() {
+      startScreen.hidden = true;
+      quiz.hidden = false;
+      renderQuestion();
+    }
 
     function renderQuestion() {
       const item = questions[current];
@@ -593,15 +680,16 @@
       }
     });
 
+    startButton.addEventListener("click", startMission);
+
     document.getElementById("restartButton").addEventListener("click", () => {
       current = 0;
       score = 0;
       results.hidden = true;
-      quiz.hidden = false;
-      renderQuestion();
+      quiz.hidden = true;
+      startScreen.hidden = false;
+      startButton.focus();
     });
-
-    renderQuestion();
   </script>
 </body>
 </html>
